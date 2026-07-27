@@ -16,6 +16,9 @@ RUN pnpm build
 
 FROM node:22-alpine AS production
 
+ARG NODE_ENV=production
+ENV NODE_ENV=${NODE_ENV}
+
 WORKDIR /usr/src/app
 
 RUN corepack enable
