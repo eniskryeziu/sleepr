@@ -1,68 +1,85 @@
 steps:
+  # Reservations
   - name: 'gcr.io/cloud-builders/docker'
     args:
       [
         'build',
         '-t',
-        'europe-west8-docker.pkg.dev/projekti-nodemailer/reservations/production',
+        'europe-west8-docker.pkg.dev/projekti-nodemailer/reservations/production:$COMMIT_SHA',
         '-f',
         'apps/reservations/Dockerfile',
         '.',
       ]
+
   - name: 'gcr.io/cloud-builders/docker'
     args:
       [
         'push',
-        'europe-west8-docker.pkg.dev/projekti-nodemailer/reservations/production',
+        'europe-west8-docker.pkg.dev/projekti-nodemailer/reservations/production:$COMMIT_SHA',
       ]
 
+  # Auth
   - name: 'gcr.io/cloud-builders/docker'
     args:
       [
         'build',
         '-t',
-        'europe-west8-docker.pkg.dev/projekti-nodemailer/auth/production',
+        'europe-west8-docker.pkg.dev/projekti-nodemailer/auth/production:$COMMIT_SHA',
         '-f',
         'apps/auth/Dockerfile',
         '.',
       ]
+
   - name: 'gcr.io/cloud-builders/docker'
     args:
       [
         'push',
-        'europe-west8-docker.pkg.dev/projekti-nodemailer/auth/production',
+        'europe-west8-docker.pkg.dev/projekti-nodemailer/auth/production:$COMMIT_SHA',
       ]
 
+  # Notifications
   - name: 'gcr.io/cloud-builders/docker'
     args:
       [
         'build',
         '-t',
-        'europe-west8-docker.pkg.dev/projekti-nodemailer/notifications/production',
+        'europe-west8-docker.pkg.dev/projekti-nodemailer/notifications/production:$COMMIT_SHA',
         '-f',
         'apps/notifications/Dockerfile',
         '.',
       ]
+
   - name: 'gcr.io/cloud-builders/docker'
     args:
       [
         'push',
-        'europe-west8-docker.pkg.dev/projekti-nodemailer/notifications/production',
+        'europe-west8-docker.pkg.dev/projekti-nodemailer/notifications/production:$COMMIT_SHA',
       ]
 
+  # Payments
   - name: 'gcr.io/cloud-builders/docker'
     args:
       [
         'build',
         '-t',
-        'europe-west8-docker.pkg.dev/projekti-nodemailer/payments/production',
+        'europe-west8-docker.pkg.dev/projekti-nodemailer/payments/production:$COMMIT_SHA',
         '-f',
         'apps/payments/Dockerfile',
         '.',
       ]
+
   - name: 'gcr.io/cloud-builders/docker'
     args:
       [
         'push',
-        'europe-west8-docker.pkg.dev/projekti-nodemailer/payments/production',
+        'europe-west8-docker.pkg.dev/projekti-nodemailer/payments/production:$COMMIT_SHA',
       ]
+
+images:
+  - 'europe-west8-docker.pkg.dev/projekti-nodemailer/reservations/production:$COMMIT_SHA'
+  - 'europe-west8-docker.pkg.dev/projekti-nodemailer/auth/production:$COMMIT_SHA'
+  - 'europe-west8-docker.pkg.dev/projekti-nodemailer/notifications/production:$COMMIT_SHA'
+  - 'europe-west8-docker.pkg.dev/projekti-nodemailer/payments/production:$COMMIT_SHA'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
