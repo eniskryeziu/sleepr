@@ -5,10 +5,12 @@ WORKDIR /usr/src/app
 RUN corepack enable
 
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY tsconfig.json tsconfig.json
 
 RUN pnpm install
 
-COPY . .
+COPY apps/reservations apps/reservations
+COPY libs libs
 
 RUN pnpm build
 
@@ -22,6 +24,6 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
 RUN pnpm install --prod
 
-COPY --from=builder /usr/src/app/dist ./dist
+COPY --from=development /usr/src/app/dist ./dist
 
 CMD ["node", "dist/apps/reservations/main.js"]

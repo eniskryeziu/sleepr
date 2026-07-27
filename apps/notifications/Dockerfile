@@ -9,7 +9,7 @@ COPY tsconfig.json tsconfig.json
 
 RUN pnpm install
 
-COPY apps/payments apps/payments
+COPY apps/notifications apps/notifications
 COPY libs libs
 
 RUN pnpm build
@@ -26,4 +26,4 @@ RUN pnpm install --prod
 
 COPY --from=development /usr/src/app/dist ./dist
 
-CMD ["node", "dist/apps/payments/main.js"]
+CMD ["node", "dist/apps/notifications/main.js"]
