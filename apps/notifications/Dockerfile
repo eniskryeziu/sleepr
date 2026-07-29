@@ -5,14 +5,14 @@ WORKDIR /usr/src/app
 RUN corepack enable
 
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-COPY tsconfig.json tsconfig.json
+COPY tsconfig.json nest-cli.json ./
 
 RUN pnpm install
 
 COPY apps/notifications apps/notifications
 COPY libs libs
 
-RUN pnpm build
+RUN pnpm build notifications
 
 FROM node:22-alpine AS production
 
