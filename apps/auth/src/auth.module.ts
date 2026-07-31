@@ -9,6 +9,7 @@ import { PassportModule } from '@nestjs/passport';
 import { LocalStategy } from './strategies/local.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import * as Joi from 'joi';
+import { HealthModule } from '@app/common/health/health.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import * as Joi from 'joi';
       }),
       inject: [ConfigService],
     }),
+    HealthModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, LocalStategy, JwtStrategy],
