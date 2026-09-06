@@ -8,11 +8,12 @@ services:
       context: .
       dockerfile: ./apps/reservations/Dockerfile
       target: development
-    command: pnpm run start:dev reservations
+    command: pnpm run start:debug reservations
     env_file:
       - ./apps/reservations/.env
     ports:
       - '3000:3000'
+      - '9229:9229'
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
@@ -37,6 +38,8 @@ services:
       dockerfile: ./apps/payments/Dockerfile
       target: development
     command: pnpm run start:dev payments
+    ports:
+      - '3005:3005'
     env_file:
       - ./apps/payments/.env
     volumes:

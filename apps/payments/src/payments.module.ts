@@ -5,7 +5,11 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import Joi from 'joi';
 import { LoggerModule } from '@app/common/logger/logger.module';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { NOTIFICATIONS_SERVICE } from '@app/common/constants/services';
+import {
+  NOTIFICATIONS_SERVICE,
+  RESERVATIONS_SERVICE,
+} from '@app/common/constants/services';
+import { StripeWebhookController } from './stripe-webhook.controller';
 
 @Module({
   imports: [
@@ -14,10 +18,16 @@ import { NOTIFICATIONS_SERVICE } from '@app/common/constants/services';
       isGlobal: true,
       validationSchema: Joi.object({
         MONGODB_URL: Joi.string().required(),
-        PORT: Joi.string().required(),
+        TCP_PORT: Joi.string().required(),
+        HTTP_PORT: Joi.string().required(),
         NOTIFICATIONS_HOST: Joi.string().required(),
         NOTIFICATIONS_PORT: Joi.number().required(),
+        RESERVATIONS_HOST: Joi.string().required(),
+        RESERVATIONS_PORT: Joi.number().required(),
         STRIPE_SECRET_KEY: Joi.string().required(),
+        STRIPE_SUCCESS_URL: Joi.string().uri().required(),
+        STRIPE_CANCEL_URL: Joi.string().uri().required(),
+        STRIPE_WEBHOOK_SECRET: Joi.string().required(),
       }),
     }),
     ClientsModule.registerAsync([
@@ -32,9 +42,20 @@ import { NOTIFICATIONS_SERVICE } from '@app/common/constants/services';
         }),
         inject: [ConfigService],
       },
+      {
+        name: RESERVATIONS_SERVICE,
+        useFactory: (configService: ConfigService) => ({
+          transport: Transport.TCP,
+          options: {
+            host: configService.get<string>('RESERVATIONS_HOST'),
+            port: configService.get<number>('RESERVATIONS_PORT'),
+          },
+        }),
+        inject: [ConfigService],
+      },
     ]),
   ],
-  controllers: [PaymentsController],
+  controllers: [PaymentsController, StripeWebhookController],
   providers: [PaymentsService],
 })
 export class PaymentsModule {}

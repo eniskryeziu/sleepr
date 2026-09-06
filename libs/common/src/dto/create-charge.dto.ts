@@ -2,18 +2,21 @@ import {
   IsDefined,
   IsNotEmptyObject,
   IsNumber,
+  IsOptional,
+  IsPositive,
   ValidateNested,
 } from 'class-validator';
 import { CardDto } from './card.dto';
 import { Type } from 'class-transformer';
 
 export class CreateChargeDto {
-  @IsDefined()
+  @IsOptional()
   @IsNotEmptyObject()
   @ValidateNested()
   @Type(() => CardDto)
   card!: CardDto;
 
-  @IsNumber()
+  @IsNumber({ maxDecimalPlaces: 2 })
+  @IsPositive()
   amount!: number;
 }

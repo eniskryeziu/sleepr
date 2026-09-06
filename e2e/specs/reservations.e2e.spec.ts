@@ -12,8 +12,8 @@ describe('Reservations', () => {
 
   beforeAll(async () => {
     const user = {
-      email: 'sleeprnestapp@gmail.com',
-      password: 'StrongPassword123!@',
+      email: 'enis@mail.com',
+      password: '123321',
     };
 
     await fetch('http://auth:3001/users', {
@@ -50,17 +50,22 @@ describe('Reservations', () => {
         method: 'post',
         headers: getAuthHeaders(),
         body: JSON.stringify({
-          startDate: '12/20/2022',
-          endDate: '12/25/2022',
+          startDate: '2026-03-05',
+          endDate: '2026-05-09',
           charge: {
             amount: 5.9,
-            payment_method: 'pm_card_visa',
+            card: {
+              cvc: '421',
+              exp_month: 12,
+              exp_year: 2027,
+              number: '4242424242424242',
+            },
           },
         }),
       },
     );
-
     expect(responseCreate.ok).toBeTruthy();
-    return await responseCreate.json();
+    const created = await responseCreate.json();
+    return created;
   };
 });

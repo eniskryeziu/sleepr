@@ -4,6 +4,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { Logger } from 'nestjs-pino';
 import { ConfigService } from '@nestjs/config';
 import cookieParser from 'cookie-parser';
+import { Transport } from '@nestjs/microservices';
 
 async function bootstrap() {
   const app = await NestFactory.create(ReservationsModule);
@@ -16,10 +17,22 @@ async function bootstrap() {
   );
   app.useLogger(app.get(Logger));
   const configService = app.get(ConfigService);
-  const port = configService.get<number>('PORT');
-  if (port === undefined) {
+  const http_port = configService.get<number>('HTTP_PORT');
+  if (http_port === undefined) {
     throw new Error('PORT is not defined');
   }
-  await app.listen(port);
+  const tcp_port = configService.get<number>('TCP_PORT');
+  if (tcp_port === undefined) {
+    throw new Error('PORT is not defined');
+  }
+  app.connectMicroservice({
+    transport: Transport.TCP,
+    options: {
+      host: '0.0.0.0',
+      port: tcp_port,
+    },
+  });
+  await app.startAllMicroservices();
+  await app.listen(http_port);
 }
 bootstrap();
